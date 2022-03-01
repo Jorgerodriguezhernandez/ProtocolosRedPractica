@@ -27,6 +27,13 @@ public class Main {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
+            channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand("ls -l");
+
+            ByteArrayOutputStream response = new ByteArrayOutputStream();
+            channel.setOutputStream(response);
+            channel.connect();
+
         }catch (JSchException e) {
             e.printStackTrace();
         }
