@@ -20,21 +20,40 @@ public class Main {
         int puerto = sc.nextInt();
         System.out.println("introduce IP");
         String host = sc.nextLine();
+        boolean encontrado = true;
 
         try{
             session = new JSch().getSession(usuario, host, puerto);
             session.setPassword(password);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
+            while (encontrado) {
+                System.out.println("Introduce el nombre del archivo a leer o 'salir' para abandonar el programa");
+                String archivo = sc.nextLine();
+                if (archivo.equals("salir")){
+                    System.out.println("Has salido del programa >> salir <<");
+                    encontrado=false;
+                }else{
+                    channel = (ChannelExec) session.openChannel("exec");
+                    channel.setCommand("cat /var/log/" + archivo);
 
-            channel = (ChannelExec) session.openChannel("exec");
-            channel.setCommand("ls -l");
+                    ByteArrayOutputStream response = new ByteArrayOutputStream();
+                    channel.setOutputStream(response);
+                    channel.connect();
 
-            ByteArrayOutputStream response = new ByteArrayOutputStream();
-            channel.setOutputStream(response);
-            channel.connect();
+                    while (channel.isConnected()) {
+                        Thread.sleep(100);
+                    }
+
+                    String responseString = new String(response.toByteArray());
+                    System.out.println(responseString);
+                }
+
+            }
 
         }catch (JSchException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
