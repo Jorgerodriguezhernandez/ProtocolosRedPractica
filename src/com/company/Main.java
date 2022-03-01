@@ -55,6 +55,13 @@ public class Main {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }finally{
+            if(session != null){
+                session.disconnect();
+            }
+            if(channel != null){
+                channel.disconnect();
+            }
         }
 
     }
