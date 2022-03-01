@@ -21,7 +21,15 @@ public class Main {
         System.out.println("introduce IP");
         String host = sc.nextLine();
 
+        try{
+            session = new JSch().getSession(usuario, host, puerto);
+            session.setPassword(password);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
 
+        }catch (JSchException e) {
+            e.printStackTrace();
+        }
 
     }
 }
